@@ -36,7 +36,8 @@ xcode-select --install
 ```Run these commands on your terminal in the current directory where you'd like to have the project located
 ```bash
 git clone https://github.com/martinlizarraga/project-relay.git
-cd project-relay
+
+d project-relay
 open SOPHub/SOPHub.xcodeproj
 
 In XCode select an iOS simulator and click the Run button or press Cmd + R
