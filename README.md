@@ -26,6 +26,7 @@ If you're using a **brand new Mac** with no developer tools installed, follow th
 - Once installed, run this in Terminal to accept the license:
   ```bash
   sudo xcodebuild -license
+```
 
 ### 2. **Install Git**
 - Run this command on your terminal
