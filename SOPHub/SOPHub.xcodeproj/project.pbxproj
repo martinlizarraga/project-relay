@@ -15,6 +15,7 @@
 		00DB3F902DB6D9A30014A550 /* SalesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00DB3F8F2DB6D9A30014A550 /* SalesView.swift */; };
 		00DB3F922DB6D9B20014A550 /* MaintenanceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00DB3F912DB6D9B20014A550 /* MaintenanceView.swift */; };
 		00DB3F942DB6D9C10014A550 /* AnalyticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00DB3F932DB6D9C10014A550 /* AnalyticsView.swift */; };
+		00DB3F962DBED1030014A550 /* TicketView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00DB3F952DBED1030014A550 /* TicketView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +28,7 @@
 		00DB3F8F2DB6D9A30014A550 /* SalesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SalesView.swift; sourceTree = "<group>"; };
 		00DB3F912DB6D9B20014A550 /* MaintenanceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintenanceView.swift; sourceTree = "<group>"; };
 		00DB3F932DB6D9C10014A550 /* AnalyticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsView.swift; sourceTree = "<group>"; };
+		00DB3F952DBED1030014A550 /* TicketView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,6 +67,7 @@
 				00DB3F8F2DB6D9A30014A550 /* SalesView.swift */,
 				00DB3F912DB6D9B20014A550 /* MaintenanceView.swift */,
 				00DB3F932DB6D9C10014A550 /* AnalyticsView.swift */,
+				00DB3F952DBED1030014A550 /* TicketView.swift */,
 				00DB3F832DB6D8B50014A550 /* Assets.xcassets */,
 				00DB3F852DB6D8B50014A550 /* Preview Content */,
 			);
@@ -152,6 +155,7 @@
 				00DB3F8E2DB6D9920014A550 /* InventoryView.swift in Sources */,
 				00DB3F902DB6D9A30014A550 /* SalesView.swift in Sources */,
 				00DB3F922DB6D9B20014A550 /* MaintenanceView.swift in Sources */,
+				00DB3F962DBED1030014A550 /* TicketView.swift in Sources */,
 				00DB3F942DB6D9C10014A550 /* AnalyticsView.swift in Sources */,
 				00DB3F822DB6D8B20014A550 /* HomeView.swift in Sources */,
 				00DB3F802DB6D8B20014A550 /* SOPHubApp.swift in Sources */,

@@ -21,10 +21,12 @@ struct HomeView: View {
                 }.padding()
                 
                 VStack(spacing: 16) {
+                    SOPButton(icon: "ticket", text: "Tickets", destination: TicketView())
                     SOPButton(icon: "square.grid.2x2", text: "Inventory", destination: InventoryView())
                     SOPButton(icon: "creditcard", text: "Sales and Register", destination: SalesView())
                     SOPButton(icon: "wrench.and.screwdriver", text: "Maintenance and Clearning", destination: MaintenanceView())
-                    SOPButton(icon: "chart.line.uptrend.xyaxis", text: "Porn", destination: AnalyticsView())
+                    SOPButton(icon: "chart.line.uptrend.xyaxis", text: "Analytics", destination: AnalyticsView())
+                    
                 }.padding()
                 Spacer()
             }.navigationBarHidden(true)
