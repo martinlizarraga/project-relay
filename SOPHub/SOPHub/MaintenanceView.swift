@@ -1,141 +1,191 @@
 //
 //  MaintenanceView.swift
 //  SOPHub
-//  Finalised by ChatGPT on 4/28/25 – add due-time call-out for pending cleaning task
+//  Updated 4/30/25 – red badge, extra cleaning tasks, Instructions button,
+//  and iOS 17‑style two‑parameter onChange closure.
 //
 
 import SwiftUI
 
-// MARK: - Domain ---------------------------------------------------------------
+// MARK: - Domain --------------------------------------------------------------
 
-struct SupplyItem: Identifiable {
-    let id = UUID()
-    let name: String
-    let usage: String
+/// Recurring cleaning / maintenance task (SOP‑driven)
+struct CleaningTask: Identifiable, Hashable {
+    let id: UUID = UUID()
+    var title: String            // e.g. "Disinfect countertops"
+    var schedule: String         // e.g. "Every 2 hrs"
+    var lastDone: Date?
+    var dueTime: Date?           // optional explicit due today
+    var doneToday: Bool          // quick status flag
 }
 
-struct CleaningTask: Identifiable {
-    let id = UUID()
-    let area: String
-    let details: String
-    let doneToday: Bool
-    let completedBy: String?
-    let completedTime: Date?
-    let dueTime: Date?                  // << new
+/// Open maintenance ticket (subset of global Ticket)
+struct MaintenanceTicket: Identifiable, Hashable {
+    let id: UUID = UUID()
+    var title: String
+    var description: String
+    var createdAt: Date = .now
 }
 
-struct MaintenanceIssue: Identifiable {
-    let id = UUID()
-    let title: String
-    let description: String
-}
+// MARK: - Mock Data -----------------------------------------------------------
 
-// MARK: Mock Data --------------------------------------------------------------
-
-private let sampleSupplies: [SupplyItem] = [
-    .init(name: "Windex",              usage: "Glass & window cleaner"),
-    .init(name: "Multi-Surface Spray", usage: "Counters & tables"),
-    .init(name: "Disinfectant Wipes",  usage: "Quick sanitizing / POS screens"),
-    .init(name: "Floor Degreaser",     usage: "Back-room tile & spills")
+private var sampleCleaning: [CleaningTask] = [
+    .init(title: "Sweep & mop floor",         schedule: "End of day",           lastDone: .now.addingTimeInterval(-86_400),          dueTime: nil,                                   doneToday: false),
+    .init(title: "Disinfect countertops",     schedule: "Every 2 hrs",          lastDone: nil,                                         dueTime: Calendar.current.date(bySettingHour: 18, minute: 0, second: 0, of: .now), doneToday: false),
+    .init(title: "Clean bathroom",            schedule: "Open & close",          lastDone: .now.addingTimeInterval(-14_400),          dueTime: nil,                                   doneToday: true),
+    // New tasks
+    .init(title: "Empty trash bins",          schedule: "End of day",           lastDone: nil,                                         dueTime: nil,                                   doneToday: false),
+    .init(title: "Sanitise POS terminals",    schedule: "Every shift change",   lastDone: nil,                                         dueTime: nil,                                   doneToday: false),
+    .init(title: "Restock restroom supplies", schedule: "Daily",                lastDone: .now.addingTimeInterval(-93_600),          dueTime: nil,                                   doneToday: false),
+    .init(title: "Clean front windows",       schedule: "Weekly (Mon)",         lastDone: nil,                                         dueTime: nil,                                   doneToday: false)
 ]
 
-private let sampleCleaning: [CleaningTask] = [
-    .init(area: "Floor",
-          details: "Sweep & mop – end of day",
-          doneToday: true,
-          completedBy: "Emma L.",
-          completedTime: Calendar.current.date(bySettingHour: 9,  minute: 32, second: 0, of: .now),
-          dueTime: nil),
-    
-    .init(area: "Countertops",
-          details: "Disinfect every 2 hrs",
-          doneToday: false,
-          completedBy: nil,
-          completedTime: nil,
-          dueTime: Calendar.current.date(bySettingHour: 18, minute: 0,  second: 0, of: .now)),  // 6 PM
-    
-    .init(area: "Bathroom",
-          details: "Full clean – open & close",
-          doneToday: true,
-          completedBy: "Carlos R.",
-          completedTime: Calendar.current.date(bySettingHour: 12, minute: 15, second: 0, of: .now),
-          dueTime: nil)
-]
-
-private let sampleIssues: [MaintenanceIssue] = [
+private var sampleTickets: [MaintenanceTicket] = [
     .init(title: "Leaking toilet pipe",      description: "Small puddle behind bathroom toilet."),
     .init(title: "Flickering ceiling light", description: "Front register – bulb or ballast?"),
-    .init(title: "HVAC not cooling",         description: "Thermostat 72 °F, store holding 78 °F.")
+    .init(title: "HVAC not cooling",         description: "Thermostat set 72 °F, store holding 78 °F.")
 ]
 
-// MARK: - View -----------------------------------------------------------------
+// MARK: - View ----------------------------------------------------------------
 
 struct MaintenanceView: View {
-    @State private var supplies = sampleSupplies
+    private enum Tab: String, CaseIterable { case cleaning = "Cleaning", issues = "Issues" }
+
+    @State private var selectedTab: Tab = .cleaning
     @State private var cleaning = sampleCleaning
-    @State private var issues   = sampleIssues
-    
-    var body: some View { /* unchanged */ NavigationStack {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 28) {
-                SectionHeader("Supplies")
-                VStack(spacing: 12) { ForEach(supplies) { SupplyCard(item: $0) } }
-                
-                SectionHeader("Cleaning")
-                VStack(spacing: 12) { ForEach(cleaning) { CleaningCard(task: $0) } }
-                
-                SectionHeader("Issues / Problems")
-                VStack(spacing: 12) { ForEach(issues) { IssueCard(issue: $0) } }
-            }
-            .padding(.vertical)
-        }
-        .navigationTitle("Maintenance")
-    }}
-}
+    @State private var tickets  = sampleTickets
 
-// MARK: - Section Header (unchanged) -------------------------------------------
+    // Computed each render for dynamic badge
+    private var openIssueCount: Int { tickets.count }
 
-private struct SectionHeader: View { /* unchanged */ let title: String
-    init(_ title: String) { self.title = title }
     var body: some View {
-        Text(title).font(.title2).bold()
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal)
+        NavigationStack {
+            VStack(spacing: 0) {
+                segmentControl
+                    .padding([.horizontal, .top])
+
+                ScrollView {
+                    if selectedTab == .cleaning {
+                        cleaningList
+                    } else {
+                        issuesList
+                    }
+                }
+            }
+            .navigationTitle("Maintenance")
+            .onAppear {
+                print("[DEBUG] MaintenanceView appeared – cleaning tasks: \(cleaning.count), tickets: \(tickets.count)")
+            }
+        }
+    }
+
+    // MARK: UI Components ---------------------------------------------------
+
+    private var segmentControl: some View {
+        ZStack(alignment: .trailing) {
+            Picker("Tab", selection: $selectedTab) {
+                Text(Tab.cleaning.rawValue).tag(Tab.cleaning)
+                Text(Tab.issues.rawValue).tag(Tab.issues)
+            }
+            .pickerStyle(.segmented)
+
+            if openIssueCount > 0 && selectedTab == .cleaning {
+                Text("\(openIssueCount)")
+                    .font(.caption2).bold()
+                    .foregroundColor(.white)
+                    .frame(width: 18, height: 18)
+                    .background(Color.red)
+                    .clipShape(Circle())
+                    .offset(x: -12, y: -10) // adjust for device
+                    .accessibilityLabel("\(openIssueCount) open maintenance issues")
+            }
+        }
+        .onChange(of: selectedTab) { oldValue, newValue in
+            print("[DEBUG] switched tab: \(oldValue.rawValue) → \(newValue.rawValue)")
+        }
+    }
+
+    private var cleaningList: some View {
+        VStack(spacing: 12) {
+            ForEach($cleaning) { $task in
+                CleaningCard(task: $task) {
+                    // Action: create ticket from task context
+                    let newTicket = MaintenanceTicket(title: "Issue with \(task.title)", description: "Raised from Cleaning task")
+                    tickets.append(newTicket)
+                    print("[DEBUG] Created ticket from task – id: \(newTicket.id)")
+                }
+            }
+        }
+        .padding(.vertical)
+    }
+
+    private var issuesList: some View {
+        VStack(spacing: 12) {
+            ForEach($tickets) { $ticket in
+                IssueCard(ticket: ticket)
+            }
+        }
+        .padding(.vertical)
     }
 }
 
-// MARK: - Cards -----------------------------------------------------------------
-
-private struct SupplyCard: View { /* unchanged */ let item: SupplyItem
-    var body: some View { CardBase {
-        Text(item.name).font(.headline)
-        Text(item.usage).font(.subheadline).foregroundColor(.secondary)
-    }}
-}
+// MARK: - Cleaning Card -------------------------------------------------------
 
 private struct CleaningCard: View {
-    let task: CleaningTask
-    
-    var body: some View { CardBase {
-        HStack {
-            Text(task.area).font(.headline)
-            Spacer()
-            StatusPill(done: task.doneToday)
+    @Binding var task: CleaningTask
+    var createTicket: () -> Void
+
+    var body: some View {
+        CardBase {
+            HStack {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(task.title).font(.headline)
+                    Text(task.schedule).font(.caption).foregroundColor(.secondary)
+                }
+                Spacer()
+                StatusPill(done: task.doneToday)
+            }
+
+            if task.doneToday, let last = task.lastDone {
+                Text("Completed at \(last, formatter: Self.timeFormatter)")
+                    .font(.caption).foregroundColor(.secondary)
+            } else if let due = task.dueTime {
+                Text("Due by \(due, formatter: Self.timeFormatter)")
+                    .font(.caption).foregroundColor(.red)
+            }
+
+            HStack(spacing: 16) {
+                Button(action: toggleDone) {
+                    Label(task.doneToday ? "Mark Pending" : "Mark Done", systemImage: task.doneToday ? "arrow.uturn.backward" : "checkmark.circle")
+                }
+                .buttonStyle(.borderedProminent)
+
+                Button(action: createTicket) {
+                    Label("Create Ticket", systemImage: "plus.rectangle.on.rectangle")
+                }
+                .buttonStyle(.bordered)
+
+                Button(action: openInstructions) {
+                    Label("Instructions", systemImage: "book")
+                }
+                .buttonStyle(.bordered)
+            }
+            .font(.caption)
         }
-        Text(task.details).font(.subheadline).foregroundColor(.secondary)
-        
-        if task.doneToday, let by = task.completedBy, let time = task.completedTime {
-            Text("Completed by \(by) at \(time, formatter: Self.timeFormatter)")
-                .font(.caption).foregroundColor(.secondary)
-        } else if let due = task.dueTime {                       // << new line
-            Text("Must be completed by \(due, formatter: Self.timeFormatter)")
-                .font(.caption).foregroundColor(.red)            // red call-out
-        }
-    }}
-    
-    private static let timeFormatter: DateFormatter = {
-        let df = DateFormatter(); df.timeStyle = .short; return df }()
-    
+        .onAppear { print("[DEBUG] CleaningCard – \(task.title) doneToday: \(task.doneToday)") }
+    }
+
+    private func toggleDone() {
+        task.doneToday.toggle()
+        task.lastDone = task.doneToday ? .now : nil
+        print("[DEBUG] Toggled doneToday for \(task.title) → \(task.doneToday)")
+    }
+
+    private func openInstructions() {
+        // Placeholder – eventually navigate to SOP detail view
+        print("[DEBUG] Open Instructions for \(task.title)")
+    }
+
     private struct StatusPill: View {
         let done: Bool
         var body: some View {
@@ -145,31 +195,38 @@ private struct CleaningCard: View {
                 .background(done ? Color.green : Color.yellow).cornerRadius(6)
         }
     }
+
+    private static let timeFormatter: DateFormatter = {
+        let df = DateFormatter(); df.timeStyle = .short; return df }()
 }
 
-private struct IssueCard: View { /* unchanged */ let issue: MaintenanceIssue
-    var body: some View { CardBase(
-        background: Color.red.opacity(0.12),
-        shadow: Color.red.opacity(0.25)
-    ) {
-        HStack(spacing: 6) {
-            Image(systemName: "exclamationmark.triangle.fill")
-                .foregroundColor(.white).padding(4)
-                .background(Color.red).clipShape(Circle())
-            Text(issue.title).font(.headline)
+// MARK: - Issue Card ----------------------------------------------------------
+
+private struct IssueCard: View {
+    let ticket: MaintenanceTicket
+
+    var body: some View {
+        CardBase(background: Color.red.opacity(0.12), shadow: Color.red.opacity(0.25)) {
+            HStack(spacing: 6) {
+                Image(systemName: "exclamationmark.triangle.fill")
+                    .foregroundColor(.white).padding(4)
+                    .background(Color.red).clipShape(Circle())
+                Text(ticket.title).font(.headline)
+            }
+            Text(ticket.description).font(.subheadline).foregroundColor(.secondary)
         }
-        Text(issue.description).font(.subheadline).foregroundColor(.secondary)
-    }}
+        .onAppear { print("[DEBUG] IssueCard appeared – \(ticket.title)") }
+    }
 }
 
-// MARK: - Shared Card Shell (unchanged) ----------------------------------------
+// MARK: - Shared Card Shell ---------------------------------------------------
 
-private struct CardBase<Content: View>: View { /* unchanged */
+private struct CardBase<Content: View>: View {
     var background: Color = Color(UIColor.secondarySystemBackground)
     var shadow: Color = .gray.opacity(0.3)
     @ViewBuilder var content: Content
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) { content }
+        VStack(alignment: .leading, spacing: 8) { content }
             .padding()
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(background).cornerRadius(12)
@@ -178,6 +235,6 @@ private struct CardBase<Content: View>: View { /* unchanged */
     }
 }
 
-// MARK: - Preview ---------------------------------------------------------------
+// MARK: - Preview -------------------------------------------------------------
 
 #Preview { MaintenanceView() }
