@@ -16,6 +16,7 @@
 		00DB3F922DB6D9B20014A550 /* MaintenanceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00DB3F912DB6D9B20014A550 /* MaintenanceView.swift */; };
 		00DB3F942DB6D9C10014A550 /* AnalyticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00DB3F932DB6D9C10014A550 /* AnalyticsView.swift */; };
 		00DB3F962DBED1030014A550 /* TicketView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00DB3F952DBED1030014A550 /* TicketView.swift */; };
+		CC8239F22DC1C58A00715175 /* TicketDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC8239F12DC1C58100715175 /* TicketDetailView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +30,7 @@
 		00DB3F912DB6D9B20014A550 /* MaintenanceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintenanceView.swift; sourceTree = "<group>"; };
 		00DB3F932DB6D9C10014A550 /* AnalyticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsView.swift; sourceTree = "<group>"; };
 		00DB3F952DBED1030014A550 /* TicketView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketView.swift; sourceTree = "<group>"; };
+		CC8239F12DC1C58100715175 /* TicketDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketDetailView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +70,7 @@
 				00DB3F912DB6D9B20014A550 /* MaintenanceView.swift */,
 				00DB3F932DB6D9C10014A550 /* AnalyticsView.swift */,
 				00DB3F952DBED1030014A550 /* TicketView.swift */,
+				CC8239F12DC1C58100715175 /* TicketDetailView.swift */,
 				00DB3F832DB6D8B50014A550 /* Assets.xcassets */,
 				00DB3F852DB6D8B50014A550 /* Preview Content */,
 			);
@@ -155,6 +158,7 @@
 				00DB3F8E2DB6D9920014A550 /* InventoryView.swift in Sources */,
 				00DB3F902DB6D9A30014A550 /* SalesView.swift in Sources */,
 				00DB3F922DB6D9B20014A550 /* MaintenanceView.swift in Sources */,
+				CC8239F22DC1C58A00715175 /* TicketDetailView.swift in Sources */,
 				00DB3F962DBED1030014A550 /* TicketView.swift in Sources */,
 				00DB3F942DB6D9C10014A550 /* AnalyticsView.swift in Sources */,
 				00DB3F822DB6D8B20014A550 /* HomeView.swift in Sources */,
