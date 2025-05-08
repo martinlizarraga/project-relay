@@ -2,18 +2,19 @@
 //  HomeView.swift
 //  SOPHub
 //
-//  Created by Martin Lizarraga on 4/21/25.
-//
 
 import SwiftUI
 
 struct HomeView: View {
-    @State private var selectedView: SOPDestination? = .tickets
+    @State private var selectedView: SOPDestination? = .dashboard   // ← default now
 
     var body: some View {
         NavigationSplitView {
             // Sidebar
             List(selection: $selectedView) {
+                NavigationLink(value: SOPDestination.dashboard) {   // ← NEW
+                    Label("Home", systemImage: "house")
+                }
                 NavigationLink(value: SOPDestination.tickets) {
                     Label("Tickets", systemImage: "ticket")
                 }
@@ -34,6 +35,8 @@ struct HomeView: View {
         } detail: {
             // Detail View
             switch selectedView {
+            case .dashboard:
+                DashboardView()                                 // ← NEW
             case .tickets:
                 TicketView()
             case .inventory:
@@ -55,6 +58,7 @@ struct HomeView: View {
 
 // MARK: - Destination Enum
 enum SOPDestination: Hashable {
+    case dashboard     // ← NEW
     case tickets
     case inventory
     case sales

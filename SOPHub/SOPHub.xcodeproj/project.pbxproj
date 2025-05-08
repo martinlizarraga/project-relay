@@ -17,6 +17,7 @@
 		00DB3F942DB6D9C10014A550 /* AnalyticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00DB3F932DB6D9C10014A550 /* AnalyticsView.swift */; };
 		00DB3F962DBED1030014A550 /* TicketView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00DB3F952DBED1030014A550 /* TicketView.swift */; };
 		CC8239F22DC1C58A00715175 /* TicketDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC8239F12DC1C58100715175 /* TicketDetailView.swift */; };
+		CCC912E62DCC2C2B003DDBC3 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC912E52DCC2C25003DDBC3 /* DashboardView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +32,7 @@
 		00DB3F932DB6D9C10014A550 /* AnalyticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsView.swift; sourceTree = "<group>"; };
 		00DB3F952DBED1030014A550 /* TicketView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketView.swift; sourceTree = "<group>"; };
 		CC8239F12DC1C58100715175 /* TicketDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketDetailView.swift; sourceTree = "<group>"; };
+		CCC912E52DCC2C25003DDBC3 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,6 +66,7 @@
 			isa = PBXGroup;
 			children = (
 				00DB3F7F2DB6D8B20014A550 /* SOPHubApp.swift */,
+				CCC912E52DCC2C25003DDBC3 /* DashboardView.swift */,
 				00DB3F812DB6D8B20014A550 /* HomeView.swift */,
 				00DB3F8D2DB6D9920014A550 /* InventoryView.swift */,
 				00DB3F8F2DB6D9A30014A550 /* SalesView.swift */,
@@ -159,6 +162,7 @@
 				00DB3F902DB6D9A30014A550 /* SalesView.swift in Sources */,
 				00DB3F922DB6D9B20014A550 /* MaintenanceView.swift in Sources */,
 				CC8239F22DC1C58A00715175 /* TicketDetailView.swift in Sources */,
+				CCC912E62DCC2C2B003DDBC3 /* DashboardView.swift in Sources */,
 				00DB3F962DBED1030014A550 /* TicketView.swift in Sources */,
 				00DB3F942DB6D9C10014A550 /* AnalyticsView.swift in Sources */,
 				00DB3F822DB6D8B20014A550 /* HomeView.swift in Sources */,
